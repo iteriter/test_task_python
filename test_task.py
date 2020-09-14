@@ -112,6 +112,7 @@ class PostsApi:
         logger.debug(f'Post requested with id {post_id}, lookup result: {post}')
 
         if post and self.post_available(post):
+            post = post.copy()
             post = self.post_to_response(post)
             return web.json_response(text=json.dumps(post))
         else:
