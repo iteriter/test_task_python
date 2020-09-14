@@ -1,6 +1,8 @@
 import sys, logging
 import json
+from datetime import datetime
 from typing import Dict
+
 from aiohttp import web
 
 POSTS_FILE = 'posts.json'
@@ -39,7 +41,28 @@ class PostsApi:
 
     async def get_all_posts(self, request):
         logger.info('get_all_posts request')
-        return web.json_response(text="This is get_all_posts request")
+
+        # only return posts that are not deleted and the date is not in the future
+        print(self.posts)
+        print(self.comments)
+        posts = [post for post in self.posts if not post['deleted']
+                                                and datetime.fromisoformat(post['date']) < datetime.now()]
+
+        # remove irrelevant field from response
+        for post in posts:
+            post.pop('deleted')
+
+        # get comment counts for posts
+        for post in posts:
+            print(post)
+            post['comments_count'] = len([comment for comment in self.comments if comment['post_id'] == post['id']])
+
+        data = {
+                "posts": posts,
+                "posts_count": len(posts)
+            }
+
+        return web.json_response(text=json.dumps(data))
 
     async def get_post(self, request):
         logger.info('get_post request')
