@@ -97,7 +97,7 @@ class PostsApi:
         logger.info('get_post request')
 
         post_id = int(request.match_info['id'])
-        post = self.posts.get(post_id, None)
+        post = self.posts.get(post_id, None).copy()
 
         logger.debug(f'Post requested with id {post_id}, lookup result: {post}')
 
