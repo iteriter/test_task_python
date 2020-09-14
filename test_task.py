@@ -45,16 +45,25 @@ class PostsApi:
 
             logger.debug(f'Loaded comments from file: {self.comments}')
 
+    @classmethod
+    def post_to_response(cls, post):
+        post.pop('deleted', None)
+        return post
+
+    @classmethod
+    def post_available(cls, post):
+        logger.debug(f'Checking if post is available for request: {post}')
+        return not post['deleted'] and datetime.fromisoformat(post['date']) < datetime.now()
+
     async def get_all_posts(self, request):
         logger.info('get_all_posts request')
 
+        # ATTENTION! make copy of post dicts to avoid modifying source data
         # only return posts that are not deleted and the date is not in the future
-        posts = [post for post in self.posts.values() if not post['deleted']
-                                                and datetime.fromisoformat(post['date']) < datetime.now()]
+        posts = [post.copy() for post in self.posts.values() if self.post_available(post)]
 
         # remove irrelevant field from response
-        for post in posts:
-            post.pop('deleted')
+        posts = list(map(self.post_to_response, posts))
 
         # get comment counts for posts
         for post in posts:
@@ -67,12 +76,20 @@ class PostsApi:
 
         return web.json_response(text=json.dumps(data))
 
+
     async def get_post(self, request):
         logger.info('get_post request')
 
+        post_id = int(request.match_info['id'])
+        post = self.posts.get(post_id, None)
 
+        logger.debug(f'Post requested with id {post_id}, lookup result: {post}')
 
-        return web.json_response(text="This is get post request")
+        if post and self.post_available(post):
+            post = self.post_to_response(post)
+            return web.json_response(text=json.dumps(post))
+        else:
+            raise web.HTTPNotFound
 
 
 if __name__ == "__main__":
