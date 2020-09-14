@@ -34,12 +34,15 @@ class PostsApi:
             path = pathlib.Path(file)
 
             if not path.exists() or not path.is_file():
-                logger.critical(f"Source file not found: {file}")
-                raise FileNotFoundError
+                raise FileNotFoundError(f"Source file not found: {file}")
 
         with open(POSTS_FILE, "r") as f:
             posts_json = f.read()
-            posts_list = json.loads(posts_json)['posts']
+
+            try:
+                posts_list = json.loads(posts_json)['posts']
+            except:
+                raise RuntimeError("Unable to parse posts json file")
 
             self.posts = {}
             # keep id for completeness of post object
@@ -50,7 +53,11 @@ class PostsApi:
 
         with open(COMMENTS_FILE, "r") as f:
             comments_json = f.read()
-            self.comments = json.loads(comments_json)['comments']
+
+            try:
+                self.comments = json.loads(comments_json)['comments']
+            except:
+                raise RuntimeError("Unable to parse comments json file")
 
             logger.debug(f'Loaded comments from file: {self.comments}')
 
