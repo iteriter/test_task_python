@@ -71,7 +71,7 @@ class PostsApi:
 
         comments = self.get_post_comments(post)
 
-        post['comments'] = comments
+        post['comments'] = sorted(comments, key=lambda comment: comment['date'], reverse=True)
         post['comments_count'] = len(comments)
 
         return post
