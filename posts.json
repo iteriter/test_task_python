@@ -1,0 +1,47 @@
+{
+    "posts":
+    [
+        {
+            "id": 1,
+            "title": "post_1",
+            "date": "2019-01-01T20:56:35",
+            "body": "The post",
+            "deleted": false
+        },
+        {
+            "id": 2,
+            "title": "post_2",
+            "date": "2019-01-01T20:56:35",
+            "body": "The post",
+            "deleted": false
+        },
+        {
+            "id": 5,
+            "title": "post_1",
+            "date": "2019-01-01T20:56:36",
+            "body": "The post",
+            "deleted": false
+        },
+        {
+            "id": 6,
+            "title": "post_6",
+            "date": "2019-01-01T20:56:36",
+            "body": "The post",
+            "deleted": true
+        },
+        {
+            "id": 7,
+            "title": "post_7",
+            "date": "2099-01-01T20:56:36",
+            "body": "The post",
+            "deleted": false
+        },
+        {
+            "id": 8,
+            "title": "post_8",
+            "date": "2018-01-01T00:12:10",
+            "body": "The post",
+            "deleted": false
+        }
+    ]
+}
