@@ -61,9 +61,19 @@ class PostsApi:
 
             logger.debug(f'Loaded comments from file: {self.comments}')
 
-    @classmethod
-    def post_to_response(cls, post):
+    def get_post_comments(self, post):
+        '''Return a copy of comments for the given post'''
+        return [comment.copy() for comment in self.comments if comment['post_id'] == post['id']]
+
+    def post_to_response(self, post):
+        '''Prepare post object to be returned by adding and removing fields'''
         post.pop('deleted', None)
+
+        comments = self.get_post_comments(post)
+
+        post['comments'] = comments
+        post['comments_count'] = len(comments)
+
         return post
 
     @classmethod
@@ -97,7 +107,7 @@ class PostsApi:
         logger.info('get_post request')
 
         post_id = int(request.match_info['id'])
-        post = self.posts.get(post_id, None).copy()
+        post = self.posts.get(post_id, None)
 
         logger.debug(f'Post requested with id {post_id}, lookup result: {post}')
 
