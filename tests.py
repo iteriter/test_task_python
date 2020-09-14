@@ -45,6 +45,7 @@ async def test_get_all_posts_comments_count(server):
     for post in data['posts']:
         if post['id'] == 1:
             assert post['comments_count'] == 2
+            assert len(post['comments']) == 2
 
 async def test_get_all_posts_only_valid(server):
     resp = await server.get('/')
