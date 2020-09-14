@@ -27,9 +27,15 @@ class PostsApi:
     def __init__(self):
         # load posts and comments from source files
 
+        # store posts in dict by id
         with open(POSTS_FILE, "r") as f:
             posts_json = f.read()
-            self.posts = json.loads(posts_json)['posts']
+            posts_list = json.loads(posts_json)['posts']
+
+            self.posts = {}
+            # keep id for completeness of post object
+            for post in posts_list:
+                self.posts[post['id']] = post
 
             logger.debug(f'Loaded posts from file: {self.posts}')
 
@@ -43,9 +49,7 @@ class PostsApi:
         logger.info('get_all_posts request')
 
         # only return posts that are not deleted and the date is not in the future
-        print(self.posts)
-        print(self.comments)
-        posts = [post for post in self.posts if not post['deleted']
+        posts = [post for post in self.posts.values() if not post['deleted']
                                                 and datetime.fromisoformat(post['date']) < datetime.now()]
 
         # remove irrelevant field from response
@@ -54,7 +58,6 @@ class PostsApi:
 
         # get comment counts for posts
         for post in posts:
-            print(post)
             post['comments_count'] = len([comment for comment in self.comments if comment['post_id'] == post['id']])
 
         data = {
@@ -66,6 +69,9 @@ class PostsApi:
 
     async def get_post(self, request):
         logger.info('get_post request')
+
+
+
         return web.json_response(text="This is get post request")
 
 
