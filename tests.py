@@ -35,7 +35,7 @@ async def test_get_all_posts_sorted(server):
 
     # check posts returned in correct orders
     ids = get_item_ids(data['posts'])
-    assert ids == (5, 1, 2, 8) or ids == (5, 2, 1, 8)
+    assert ids == [5, 1, 2, 8] or ids == [5, 2, 1, 8]
 
 async def test_get_all_posts_comments_count(server):
     resp = await server.get('/')
@@ -81,7 +81,7 @@ async def test_get_post_comments_sorted(server):
     comments = data['comments']
     ids = get_item_ids(comments)
 
-    assert ids == (2,1)
+    assert ids == [2,1]
 
 async def test_get_post_deleted(server):
     resp = await server.get('/post/6')
