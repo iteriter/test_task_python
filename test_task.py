@@ -2,6 +2,7 @@ import sys, logging
 import json
 from datetime import datetime
 from typing import Dict
+import pathlib
 
 from aiohttp import web
 
@@ -28,6 +29,14 @@ class PostsApi:
         # load posts and comments from source files
 
         # store posts in dict by id
+
+        for file in (POSTS_FILE, COMMENTS_FILE):
+            path = pathlib.Path(file)
+
+            if not path.exists() or not path.is_file():
+                logger.critical(f"Source file not found: {file}")
+                raise FileNotFoundError
+
         with open(POSTS_FILE, "r") as f:
             posts_json = f.read()
             posts_list = json.loads(posts_json)['posts']
