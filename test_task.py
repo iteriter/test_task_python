@@ -86,7 +86,7 @@ class PostsApi:
             post['comments_count'] = len([comment for comment in self.comments if comment['post_id'] == post['id']])
 
         data = {
-                "posts": posts,
+                "posts": sorted(posts, key=lambda post: post['date'], reverse=True),
                 "posts_count": len(posts)
             }
 
